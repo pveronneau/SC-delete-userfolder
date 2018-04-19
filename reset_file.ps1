@@ -1,4 +1,9 @@
 #Set the program install directory
+$ProgramName = "*Star Citizen*"
+$installdir = (Get-ChildItem "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Installer\UserData\*\Products\*\InstallProperties" | 
+    Where-Object { $_.getValue('DisplayName') -like $ProgramName } | ForEach-Object { $_.getValue('InstallLocation')})
+Write-Output $installdir
+
 [string]$scdir = "C:\Program Files\Roberts Space Industries"
 #Where you want the backup to be saved, default is the documents directory under a folder called SC_config_backup
 [string]$cfgbkpdir = "$HOME\Documents\SC_Mappings"
