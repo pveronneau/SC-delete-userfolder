@@ -1,11 +1,19 @@
-#Set the program install directory
+# Set the program install directory by locating the launcher install path from the registry
 $ProgramName = "*RSI Launcher*"
 $installdir = (Get-ChildItem "HKLM:\SOFTWARE\" |  Where-Object { $_.getValue('ShortcutName') -like $ProgramName } | ForEach-Object { $_.getValue('InstallLocation')})
 $scdir = $installdir.Replace("RSI Launcher","")
-# Uncomment to manually specify
+####
+#   USER DEFINED VARIABLES
+####
+# Uncomment below to manually specify a directory instead of using the launcher install location.
 #[string]$scdir = "C:\Program Files\Roberts Space Industries"
-#Where you want the backup to be saved, default is the documents directory under a folder called SC_config_backup
+# Specify the directory where you want the backup to be saved. Default is the documents directory under a folder called SC_Mappings.
 [string]$cfgbkpdir = "$HOME\Documents\SC_Mappings"
+# startup config file variables
+[string]$userconfig = "r_displayinfo=3"
+####
+#   DO NOT MODIFY BELOW THIS LINE!
+####
 #Control file location for Live
 [string]$pudir = "\StarCitizen"
 #Control file location for the PTU
@@ -20,22 +28,16 @@ $scdir = $installdir.Replace("RSI Launcher","")
 # PTU folders
 [string]$ptuuser = "$scdir$ptudir$userfolder"
 [string]$ptuxmlsource = "$ptuuser$mappingdir"
-# startup config file variables
-[string]$userconfig = "r_displayinfo=3"
-# Make sure the backup directories exist, if they don't create them
-if (!(Test-Path -path $cfgbkpdir\PU\)) {New-Item $cfgbkpdir\PU\ -Type Directory}
-if (!(Test-Path -path $cfgbkpdir\PTU\)) {New-Item $cfgbkpdir\PTU\ -Type Directory}
-#Make a backup of all the exported xml maps
-if (Test-Path -path $puxmlsource) {Copy-item $puxmlsource\* -Destination $cfgbkpdir\PU\ -Force -Recurse}
-if (Test-Path -path $ptuxmlsource) {Copy-item $ptuxmlsource\* -Destination $cfgbkpdir\PTU\ -Force -Recurse}
+# Make a backup of all the exported xml maps also Make sure the backup directories exist, if they don't create them
+if (Test-Path -path $puxmlsource) {if (!(Test-Path -path $cfgbkpdir\PU\)) {New-Item $cfgbkpdir\PU\ -Type Directory} Copy-item $puxmlsource\* -Destination $cfgbkpdir\PU\ -Force -Recurse}
+if (Test-Path -path $ptuxmlsource) {if (!(Test-Path -path $cfgbkpdir\PTU\)) {New-Item $cfgbkpdir\PTU\ -Type Directory} Copy-item $ptuxmlsource\* -Destination $cfgbkpdir\PTU\ -Force -Recurse}
 # Delete the user folder
-Remove-Item -Recurse -Force -LiteralPath $puuser
-Remove-Item -Recurse -Force -LiteralPath $ptuuser
-# Make sure source directories exist
-if (!(Test-Path -path $puxmlsource)) {New-Item $puxmlsource -Type Directory}
-if (!(Test-Path -path $ptuxmlsource)) {New-Item $ptuxmlsource -Type Directory}
-# Restore xml files
-Copy-item $cfgbkpdir\PU\* -Destination $puxmlsource -Force -Recurse
-Copy-item $cfgbkpdir\PTU\* -Destination $ptuxmlsource  -Force -Recurse
+if (Test-Path -path $puuser) { Remove-Item -Recurse -Force -LiteralPath $puuser }
+if (Test-Path -path $ptuuser) { Remove-Item -Recurse -Force -LiteralPath $ptuuser }
+# Make sure source directories exist, then restore xml files
+if ((Test-Path -path $cfgbkpdir\PU\)) {New-Item $puxmlsource -Type Directory ; Copy-item $cfgbkpdir\PU\* -Destination $puxmlsource -Force -Recurse }
+if ((Test-Path -path $cfgbkpdir\PTU\)) {New-Item $ptuxmlsource -Type Directory ; Copy-item $cfgbkpdir\PTU\* -Destination $ptuxmlsource  -Force -Recurse}
 # Add user.cfg to PTU version
 New-Item -Path $scdir$ptudir\LIVE -Name "USER.cfg" -ItemType "file" -Value $userconfig  -Force
+# Add user.cfg to PU version
+#New-Item -Path $scdir$pudir\LIVE -Name "USER.cfg" -ItemType "file" -Value $userconfig  -Force
