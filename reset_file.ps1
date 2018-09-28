@@ -20,6 +20,7 @@ $scdir = $installdir.Replace("RSI Launcher","")
 [string]$ptudir = "\StarCitizenPTU"
 # User folder
 [string]$userfolder = "\LIVE\USER"
+[string]$ptuuserfolder = "\PTU\USER"
 # Mappings directory
 [string]$mappingdir = "\Controls\Mappings\"
 # PU folders
@@ -27,7 +28,9 @@ $scdir = $installdir.Replace("RSI Launcher","")
 [string]$puxmlsource = "$puuser$mappingdir"
 # PTU folders
 [string]$ptuuser = "$scdir$ptudir$userfolder"
+[string]$ptuptuuser = "$scdir$ptudir$ptuuserfolder"
 [string]$ptuxmlsource = "$ptuuser$mappingdir"
+[string]$ptuptuxmlsource = "$ptuptuuser$mappingdir"
 # Make a backup of all the exported xml maps also Make sure the backup directories exist, if they don't create them
 if (Test-Path -path $puxmlsource) {if (!(Test-Path -path $cfgbkpdir\PU\)) {New-Item $cfgbkpdir\PU\ -Type Directory} Copy-item $puxmlsource\* -Destination $cfgbkpdir\PU\ -Force -Recurse}
 if (Test-Path -path $ptuxmlsource) {if (!(Test-Path -path $cfgbkpdir\PTU\)) {New-Item $cfgbkpdir\PTU\ -Type Directory} Copy-item $ptuxmlsource\* -Destination $cfgbkpdir\PTU\ -Force -Recurse}
@@ -37,6 +40,7 @@ if (Test-Path -path $ptuuser) { Remove-Item -Recurse -Force -LiteralPath $ptuuse
 # Make sure source directories exist, then restore xml files
 if ((Test-Path -path $cfgbkpdir\PU\)) {New-Item $puxmlsource -Type Directory ; Copy-item $cfgbkpdir\PU\* -Destination $puxmlsource -Force -Recurse }
 if ((Test-Path -path $cfgbkpdir\PTU\)) {New-Item $ptuxmlsource -Type Directory ; Copy-item $cfgbkpdir\PTU\* -Destination $ptuxmlsource  -Force -Recurse}
+if ((Test-Path -path $cfgbkpdir\PTU\)) {New-Item $ptuxmlsource -Type Directory ; Copy-item $cfgbkpdir\PTU\* -Destination $ptuptuxmlsource  -Force -Recurse}
 # Add user.cfg to PTU version
 New-Item -Path $scdir$ptudir\LIVE -Name "USER.cfg" -ItemType "file" -Value $userconfig  -Force
 # Add user.cfg to PU version
