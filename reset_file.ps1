@@ -10,7 +10,7 @@ $scdir = $installdir.Replace("RSI Launcher","")
 # Specify the directory where you want the backup to be saved. Default is the documents directory under a folder called SC_Mappings.
 [string]$cfgbkpdir = "$HOME\Documents\SC_Mappings"
 # startup config file variables
-[string]$userconfig = "r_displayinfo=3"
+[string]$userconfig = "r_displaySessionInfo = 1"
 ####
 #   DO NOT MODIFY BELOW THIS LINE!
 ####
