@@ -17,7 +17,7 @@ $scdir = $installdir.Replace("RSI Launcher","")
 #Control file location for Live
 [string]$pudir = "\StarCitizen"
 #Control file location for the PTU
-[string]$ptudir = "\StarCitizenPTU"
+[string]$ptudir = "\StarCitizen"
 # User folder
 [string]$userfolder = "\LIVE\USER"
 [string]$ptuuserfolder = "\PTU\USER"
